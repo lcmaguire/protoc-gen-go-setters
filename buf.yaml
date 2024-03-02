@@ -1,0 +1,9 @@
+version: v1
+breaking:
+  use:
+    - FILE
+lint:
+  ignore: 
+    - vendor
+  use:
+    - DEFAULT

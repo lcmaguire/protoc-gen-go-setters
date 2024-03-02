@@ -1,0 +1,61 @@
+syntax = "proto3";
+package example;
+
+option go_package = "github.com/lcmaguire/protoc-gen-go-setters/example";
+
+import "google/protobuf/any.proto";
+
+
+message Example {
+    // standard types
+    string name = 1;
+    int32 count = 2;
+    bool active = 3;
+    // repeated example (consider an append function)
+    repeated string tags = 4;
+    // extra message
+    Foo foo = 5;
+    // nested message.
+    message Bar {
+        string nested = 1;
+    }
+    Bar bar = 6;
+
+    // imported message (todo see how to not generate setters for this, could be in buf.work)
+    // works but generates some junk files for imports
+    google.protobuf.Any any = 7;
+
+    // enum
+    Data data = 8;
+
+    // optional field
+    optional string extra_comments = 9;
+
+    // map (consider a SetKey, Value)
+    map<string, Foo> foo_map = 10;
+
+    // oneofs
+    SampleMessage sample = 11;
+}
+
+message Foo {
+    int64 count = 1;
+}
+
+message Funk {
+    int64 count = 1;
+}
+
+enum Data {
+    DATA_UNSPECIFIED = 0;
+    DATA_SPECIFIED = 1;
+}
+
+message SampleMessage {
+    oneof test_oneof {
+      string name = 1;
+      Foo foo = 2;
+      Funk funk = 3;
+    } 
+    bool active= 4;
+}
