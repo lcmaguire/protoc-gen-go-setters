@@ -28,7 +28,8 @@ example := &example.Example{}
 example.SetFoo(example.Foo{...}).SetActive(true).SetName("myName")
 ```
 
-## oneofs
+### oneofs
+
 From
 ```.go
 	example := example.Example{
@@ -47,7 +48,7 @@ example.GetSample().SetName("abcdefg")
 example.Sample.SetName("abcdefg")
 ```
 
-## Arrays 
+### Arrays 
 
 generates Append functions for repeated fields 
 
@@ -68,7 +69,7 @@ tags := []string{"a", "b"}
 example.SetTags(tags)
 ```
 
-## Map
+### Map
 
 generates functions to set values for a field 
 
@@ -86,33 +87,16 @@ myMap := map[key]value{...}
 example.SetFooMap(myMap)
 ```
 
-```.go
-// instead of setting values like below.
-example := example.Example{
-    Active: true,
-    Foo: example.Foo{...},
-    Name: "myName",
-    ...
-}
-
-// or updating values like this
-example.Active = true
-...
-
-// you can now
-example := &example.Example{}
-example.SetFoo(example.Foo{...}).SetActive(true).SetName("myName")
-```
 
 ## Supported Setters
 
-| fieldKind | supported          | Repeated           | nested             |
+| fieldKind | supported          | repeated           | nested             |
 | --------- | ------------------ | ------------------ | ------------------ |
 | scalar    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | message   | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | enum      | :white_check_mark: | :white_check_mark:                | :white_check_mark: |
 | oneof     | :white_check_mark: | :moyai:            | :white_check_mark: |
-| maps      | :x:                | :moyai:            | :white_check_mark:                |
+| maps      | :white_check_mark:                | :moyai:            | :white_check_mark:                |
 
 
 :moyai: indicates it is unsupported by proto feature see [proto-guide](https://protobuf.dev/programming-guides/proto3/)
