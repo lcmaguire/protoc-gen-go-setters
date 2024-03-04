@@ -40,91 +40,7 @@ func main() {
 			newFile.P("package " + file.GoPackageName)
 
 			for _, message := range file.Messages {
-				generateMessageSetters(gen, newFile, message, filesToGenerate)
-
-				/*messageName := message.GoIdent.GoName
-
-				for _, v := range message.Messages {
-					newFile.P("// message nested")
-					newFile.P("// ", v.GoIdent.GoName)
-				}
-
-				// generate oneof setters.
-				for _, oneof := range message.Oneofs {
-					for _, field := range oneof.Fields {
-						// this distinguishes between a oneof and an optional field.
-						if field.Desc.HasOptionalKeyword() {
-							continue
-						}
-
-						goType, _ := fieldGoType(newFile, field)
-
-						// may need to get import.
-						oneOfMessageName := field.Parent.GoIdent.GoName
-						currFieldGoName := field.GoName
-
-						inputWrapperName := fmt.Sprintf("&%s_%s", oneOfMessageName, currFieldGoName)
-						//if field.Desc.ContainingMessage() != nil && field.Desc.Message() != nil {
-						//	inputWrapperName = fmt.Sprintf("&%s_%s_", oneOfMessageName, currFieldGoName)
-						//}
-
-						// todo see if above val exists
-						// need a way to distinguish oneof messages declared within struct vs external to struct
-
-						info := OneOfSetterTemplate{
-							MessageName:      field.Parent.GoIdent.GoName,
-							StructFieldName:  field.Oneof.GoName,
-							InputWrapperName: inputWrapperName,
-							FieldName:        field.GoName,
-							FieldType:        goType,
-						}
-						content := ExecuteTemplate(oneofTpl, info)
-						newFile.P(content)
-					}
-				}
-
-				for _, field := range message.Fields {
-					if field.Oneof != nil && !field.Desc.HasOptionalKeyword() {
-						continue
-					}
-
-					goType, pointer := fieldGoType(newFile, field)
-					fieldType := goType
-					if pointer {
-						fieldType = "*" + goType
-					}
-
-					fieldName := field.GoName
-					info := SetterTemplate{
-						MessageName: messageName,
-						FieldName:   field.GoName,
-						FieldType:   fieldType,
-					}
-
-					content := ExecuteTemplate(tpl, info)
-					newFile.P(content)
-
-					// will generate an append func.
-					if field.Desc.IsList() {
-						info.FieldType = strings.ReplaceAll(info.FieldType, "[]", "...")
-						arrayAddition := ExecuteTemplate(appendArrayTpl, info)
-						newFile.P(arrayAddition)
-					}
-
-					// map set func
-					if field.Desc.IsMap() {
-						keyType, _ := fieldGoType(newFile, field.Message.Fields[0])
-						valType, _ := fieldGoType(newFile, field.Message.Fields[1])
-						ms := MapSetterTemplate{
-							MessageName: messageName,
-							FieldName:   fieldName,
-							KeyType:     keyType,
-							ValueType:   valType,
-						}
-						mapSetKey := ExecuteTemplate(mapSetTpl, ms)
-						newFile.P(mapSetKey)
-					}
-				}*/
+				generateMessageSetters(gen, newFile, message)
 			}
 		}
 
@@ -132,7 +48,7 @@ func main() {
 	})
 }
 
-func generateMessageSetters(gen *protogen.Plugin, newFile *protogen.GeneratedFile, message *protogen.Message, filesToGenerate map[string]bool) {
+func generateMessageSetters(gen *protogen.Plugin, newFile *protogen.GeneratedFile, message *protogen.Message) {
 	messageName := message.GoIdent.GoName
 
 	// generate any messages declared in a nested manner.
@@ -142,7 +58,7 @@ func generateMessageSetters(gen *protogen.Plugin, newFile *protogen.GeneratedFil
 		if v.Desc.IsMapEntry() {
 			continue
 		}
-		generateMessageSetters(gen, newFile, v, filesToGenerate)
+		generateMessageSetters(gen, newFile, v)
 	}
 
 	// generate oneof setters.
