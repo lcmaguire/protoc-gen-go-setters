@@ -21,8 +21,7 @@ message Example {
     }
     Bar bar = 6;
 
-    // imported message (todo see how to not generate setters for this, could be in buf.work)
-    // works but generates some junk files for imports
+    // imported message 
     google.protobuf.Any any = 7;
 
     // enum
