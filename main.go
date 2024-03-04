@@ -237,7 +237,6 @@ func (x *{{.MessageName}} ) Set{{.FieldName}}Key(key {{.KeyType}}, val {{.ValueT
 `
 
 func ExecuteTemplate(tplate string, data any) string {
-	// todo read more about template library, see if it may be better to have one Template struct and re use it.
 	templ, err := template.New("").Parse(tplate)
 	if err != nil {
 		panic(err)
