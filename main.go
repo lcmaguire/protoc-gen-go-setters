@@ -40,7 +40,14 @@ func main() {
 			newFile.P("package " + file.GoPackageName)
 
 			for _, message := range file.Messages {
-				messageName := message.GoIdent.GoName
+				generateMessageSetters(gen, newFile, message, filesToGenerate)
+
+				/*messageName := message.GoIdent.GoName
+
+				for _, v := range message.Messages {
+					newFile.P("// message nested")
+					newFile.P("// ", v.GoIdent.GoName)
+				}
 
 				// generate oneof setters.
 				for _, oneof := range message.Oneofs {
@@ -56,10 +63,18 @@ func main() {
 						oneOfMessageName := field.Parent.GoIdent.GoName
 						currFieldGoName := field.GoName
 
+						inputWrapperName := fmt.Sprintf("&%s_%s", oneOfMessageName, currFieldGoName)
+						//if field.Desc.ContainingMessage() != nil && field.Desc.Message() != nil {
+						//	inputWrapperName = fmt.Sprintf("&%s_%s_", oneOfMessageName, currFieldGoName)
+						//}
+
+						// todo see if above val exists
+						// need a way to distinguish oneof messages declared within struct vs external to struct
+
 						info := OneOfSetterTemplate{
 							MessageName:      field.Parent.GoIdent.GoName,
 							StructFieldName:  field.Oneof.GoName,
-							InputWrapperName: fmt.Sprintf("&%s_%s", oneOfMessageName, currFieldGoName),
+							InputWrapperName: inputWrapperName,
 							FieldName:        field.GoName,
 							FieldType:        goType,
 						}
@@ -109,12 +124,94 @@ func main() {
 						mapSetKey := ExecuteTemplate(mapSetTpl, ms)
 						newFile.P(mapSetKey)
 					}
-				}
+				}*/
 			}
 		}
 
 		return nil
 	})
+}
+
+func generateMessageSetters(gen *protogen.Plugin, newFile *protogen.GeneratedFile, message *protogen.Message, filesToGenerate map[string]bool) {
+	messageName := message.GoIdent.GoName
+
+	// generate any messages declared in a nested manner.
+	// May introduce potential endless loop if messages contain circular refrences.
+	// May duplicate code if Message refrences already existing message
+	for _, v := range message.Messages {
+		if v.Desc.IsMapEntry() {
+			continue
+		}
+		generateMessageSetters(gen, newFile, v, filesToGenerate)
+	}
+
+	// generate oneof setters.
+	for _, oneof := range message.Oneofs {
+		for _, field := range oneof.Fields {
+			// this distinguishes between a oneof and an optional field.
+			if field.Desc.HasOptionalKeyword() {
+				continue
+			}
+
+			goType, _ := fieldGoType(newFile, field)
+
+			inputWrapperName := "&" + field.GoIdent.GoName
+
+			info := OneOfSetterTemplate{
+				MessageName:      field.Parent.GoIdent.GoName,
+				StructFieldName:  field.Oneof.GoName,
+				InputWrapperName: inputWrapperName,
+				FieldName:        field.GoName,
+				FieldType:        goType,
+			}
+			content := ExecuteTemplate(oneofTpl, info)
+			newFile.P(content)
+		}
+	}
+
+	for _, field := range message.Fields {
+		if field.Oneof != nil && !field.Desc.HasOptionalKeyword() {
+			continue
+		}
+
+		goType, pointer := fieldGoType(newFile, field)
+		fieldType := goType
+		if pointer {
+			fieldType = "*" + goType
+		}
+
+		fieldName := field.GoName
+		info := SetterTemplate{
+			MessageName: messageName,
+			FieldName:   field.GoName,
+			FieldType:   fieldType,
+		}
+
+		content := ExecuteTemplate(tpl, info)
+		newFile.P(content)
+
+		// will generate an append func.
+		if field.Desc.IsList() {
+			info.FieldType = strings.ReplaceAll(info.FieldType, "[]", "...")
+			arrayAddition := ExecuteTemplate(appendArrayTpl, info)
+			newFile.P(arrayAddition)
+		}
+
+		// map set func
+		if field.Desc.IsMap() {
+			keyType, _ := fieldGoType(newFile, field.Message.Fields[0])
+			valType, _ := fieldGoType(newFile, field.Message.Fields[1])
+
+			ms := MapSetterTemplate{
+				MessageName: messageName,
+				FieldName:   fieldName,
+				KeyType:     keyType,
+				ValueType:   valType,
+			}
+			mapSetKey := ExecuteTemplate(mapSetTpl, ms)
+			newFile.P(mapSetKey)
+		}
+	}
 }
 
 // Might be worthwhile looking at how go plugin generates proto messages.
@@ -209,6 +306,7 @@ type OneOfSetterTemplate struct {
 	FieldType        string
 }
 
+// this is not necessarily correct
 const oneofTpl = `
 
 // Set{{.FieldName}} will take set {{.MessageName}}.{{.FieldName}} to input and return {{.MessageName}}.
