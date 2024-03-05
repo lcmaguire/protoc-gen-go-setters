@@ -6,6 +6,30 @@ import (
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
+// SetNested will take set Example_Bar.Nested to input and return Example_Bar.
+func (x *Example_Bar) SetNested(in string) *Example_Bar {
+	x.Nested = in
+	return x
+}
+
+// SetActive will take set Example_Far.Active to input and return Example_Far.
+func (x *Example_Far) SetActive(in bool) *Example_Far {
+	x.Active = in
+	return x
+}
+
+// SetAbc will take set Example.Abc to input and return Example.
+func (x *Example) SetAbc(in string) *Example {
+	x.AbcOneof = &Example_Abc{Abc: in}
+	return x
+}
+
+// SetFar will take set Example.Far to input and return Example.
+func (x *Example) SetFar(in *Example_Far) *Example {
+	x.AbcOneof = &Example_Far_{Far: in}
+	return x
+}
+
 // SetName will take set Example.Name to input and return Example.
 func (x *Example) SetName(in string) *Example {
 	x.Name = in
@@ -72,6 +96,9 @@ func (x *Example) SetFooMap(in map[string]*Foo) *Example {
 	return x
 }
 
+// Example
+// FooMap
+
 // SetFooMapKey will set the value in the map for that key and return Example.
 func (x *Example) SetFooMapKey(key string, val *Foo) *Example {
 	x.FooMap[key] = val
@@ -111,11 +138,5 @@ func (x *SampleMessage) SetFoo(in *Foo) *SampleMessage {
 // SetFunk will take set SampleMessage.Funk to input and return SampleMessage.
 func (x *SampleMessage) SetFunk(in *Funk) *SampleMessage {
 	x.TestOneof = &SampleMessage_Funk{Funk: in}
-	return x
-}
-
-// SetActive will take set SampleMessage.Active to input and return SampleMessage.
-func (x *SampleMessage) SetActive(in bool) *SampleMessage {
-	x.Active = in
 	return x
 }

@@ -33,8 +33,18 @@ message Example {
     // map (consider a SetKey, Value)
     map<string, Foo> foo_map = 10;
 
+    
     // oneofs
     SampleMessage sample = 11;
+
+    oneof abc_oneof {
+          string abc = 12;
+          Far far = 13;
+    } 
+    message Far {
+        bool active = 1;
+     }
+
 }
 
 message Foo {
@@ -56,5 +66,4 @@ message SampleMessage {
       Foo foo = 2;
       Funk funk = 3;
     } 
-    bool active= 4;
 }
