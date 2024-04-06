@@ -21,16 +21,9 @@ func main() {
 		// this enables optional fields to be supported.
 		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
-		filesToGenerate := map[string]bool{}
-		// get a map of requested files to determine if generation should proceed.
-		for _, v := range gen.Request.FileToGenerate {
-			filesToGenerate[v] = true
-		}
-
 		// for all files, generate setters for all fields for all messages.
 		for _, file := range gen.Files {
-			// if file was not included in request then skip generating functions.
-			if !filesToGenerate[file.Desc.Path()] {
+			if !file.Generate || len(file.Messages) == 0 {
 				continue
 			}
 
@@ -195,20 +188,16 @@ type SetterTemplate struct {
 
 const tpl = `
 
-// Set{{.FieldName}} will take set {{.MessageName}}.{{.FieldName}} to input and return {{.MessageName}}.
-func (x *{{.MessageName}} ) Set{{.FieldName}}(in {{.FieldType}} ) *{{.MessageName}}{
+func (x *{{.MessageName}} ) Set{{.FieldName}}(in {{.FieldType}} ){
 	x.{{.FieldName}} = in
-	return x
 }
 
 `
 
 const appendArrayTpl = `
 
-// Append{{.FieldName}} will append all input values to {{.MessageName}}.{{.FieldName}}  and return {{.MessageName}}.
-func (x *{{.MessageName}} ) Append{{.FieldName}}(in {{.FieldType}} ) *{{.MessageName}}{
+func (x *{{.MessageName}} ) Append{{.FieldName}}(in {{.FieldType}} ) {
 	x.{{.FieldName}} = append(x.{{.FieldName}}, in...)
-	return x
 }
 
 `
@@ -225,10 +214,8 @@ type OneOfSetterTemplate struct {
 // this is not necessarily correct
 const oneofTpl = `
 
-// Set{{.FieldName}} will take set {{.MessageName}}.{{.FieldName}} to input and return {{.MessageName}}.
-func (x *{{.MessageName}} ) Set{{.FieldName}}(in {{.FieldType}} ) *{{.MessageName}}{
+func (x *{{.MessageName}} ) Set{{.FieldName}}(in {{.FieldType}} ) {
 	x.{{.StructFieldName}} = {{.InputWrapperName}}{ {{.FieldName}}:in }
-	return x
 }
 
 `
@@ -242,10 +229,8 @@ type MapSetterTemplate struct {
 
 const mapSetTpl = `
 
-// Set{{.FieldName}}Key will set the value in the map for that key and return {{.MessageName}}.
-func (x *{{.MessageName}} ) Set{{.FieldName}}Key(key {{.KeyType}}, val {{.ValueType}} ) *{{.MessageName}}{
+func (x *{{.MessageName}} ) Set{{.FieldName}}Key(key {{.KeyType}}, val {{.ValueType}} ){
 	x.{{.FieldName}}[key] = val
-	return x
 }
 
 `

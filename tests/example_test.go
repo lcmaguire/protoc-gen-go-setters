@@ -6,8 +6,7 @@ import (
 	"github.com/lcmaguire/protoc-gen-go-setters/example"
 )
 
-func TestExample(t *testing.T) {
-
+func TestSetters(t *testing.T) {
 	s := &example.SampleMessage{
 		TestOneof: nil,
 	}

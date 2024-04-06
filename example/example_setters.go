@@ -6,137 +6,90 @@ import (
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
-// SetNested will take set Example_Bar.Nested to input and return Example_Bar.
-func (x *Example_Bar) SetNested(in string) *Example_Bar {
+func (x *Example_Bar) SetNested(in string) {
 	x.Nested = in
-	return x
 }
 
-// SetActive will take set Example_Far.Active to input and return Example_Far.
-func (x *Example_Far) SetActive(in bool) *Example_Far {
+func (x *Example_Far) SetActive(in bool) {
 	x.Active = in
-	return x
 }
 
-// SetAbc will take set Example.Abc to input and return Example.
-func (x *Example) SetAbc(in string) *Example {
+func (x *Example) SetAbc(in string) {
 	x.AbcOneof = &Example_Abc{Abc: in}
-	return x
 }
 
-// SetFar will take set Example.Far to input and return Example.
-func (x *Example) SetFar(in *Example_Far) *Example {
+func (x *Example) SetFar(in *Example_Far) {
 	x.AbcOneof = &Example_Far_{Far: in}
-	return x
 }
 
-// SetName will take set Example.Name to input and return Example.
-func (x *Example) SetName(in string) *Example {
+func (x *Example) SetName(in string) {
 	x.Name = in
-	return x
 }
 
-// SetCount will take set Example.Count to input and return Example.
-func (x *Example) SetCount(in int32) *Example {
+func (x *Example) SetCount(in int32) {
 	x.Count = in
-	return x
 }
 
-// SetActive will take set Example.Active to input and return Example.
-func (x *Example) SetActive(in bool) *Example {
+func (x *Example) SetActive(in bool) {
 	x.Active = in
-	return x
 }
 
-// SetTags will take set Example.Tags to input and return Example.
-func (x *Example) SetTags(in []string) *Example {
+func (x *Example) SetTags(in []string) {
 	x.Tags = in
-	return x
 }
 
-// AppendTags will append all input values to Example.Tags  and return Example.
-func (x *Example) AppendTags(in ...string) *Example {
+func (x *Example) AppendTags(in ...string) {
 	x.Tags = append(x.Tags, in...)
-	return x
 }
 
-// SetFoo will take set Example.Foo to input and return Example.
-func (x *Example) SetFoo(in *Foo) *Example {
+func (x *Example) SetFoo(in *Foo) {
 	x.Foo = in
-	return x
 }
 
-// SetBar will take set Example.Bar to input and return Example.
-func (x *Example) SetBar(in *Example_Bar) *Example {
+func (x *Example) SetBar(in *Example_Bar) {
 	x.Bar = in
-	return x
 }
 
-// SetAny will take set Example.Any to input and return Example.
-func (x *Example) SetAny(in *anypb.Any) *Example {
+func (x *Example) SetAny(in *anypb.Any) {
 	x.Any = in
-	return x
 }
 
-// SetData will take set Example.Data to input and return Example.
-func (x *Example) SetData(in Data) *Example {
+func (x *Example) SetData(in Data) {
 	x.Data = in
-	return x
 }
 
-// SetExtraComments will take set Example.ExtraComments to input and return Example.
-func (x *Example) SetExtraComments(in *string) *Example {
+func (x *Example) SetExtraComments(in *string) {
 	x.ExtraComments = in
-	return x
 }
 
-// SetFooMap will take set Example.FooMap to input and return Example.
-func (x *Example) SetFooMap(in map[string]*Foo) *Example {
+func (x *Example) SetFooMap(in map[string]*Foo) {
 	x.FooMap = in
-	return x
 }
 
-// Example
-// FooMap
-
-// SetFooMapKey will set the value in the map for that key and return Example.
-func (x *Example) SetFooMapKey(key string, val *Foo) *Example {
+func (x *Example) SetFooMapKey(key string, val *Foo) {
 	x.FooMap[key] = val
-	return x
 }
 
-// SetSample will take set Example.Sample to input and return Example.
-func (x *Example) SetSample(in *SampleMessage) *Example {
+func (x *Example) SetSample(in *SampleMessage) {
 	x.Sample = in
-	return x
 }
 
-// SetCount will take set Foo.Count to input and return Foo.
-func (x *Foo) SetCount(in int64) *Foo {
+func (x *Foo) SetCount(in int64) {
 	x.Count = in
-	return x
 }
 
-// SetCount will take set Funk.Count to input and return Funk.
-func (x *Funk) SetCount(in int64) *Funk {
+func (x *Funk) SetCount(in int64) {
 	x.Count = in
-	return x
 }
 
-// SetName will take set SampleMessage.Name to input and return SampleMessage.
-func (x *SampleMessage) SetName(in string) *SampleMessage {
+func (x *SampleMessage) SetName(in string) {
 	x.TestOneof = &SampleMessage_Name{Name: in}
-	return x
 }
 
-// SetFoo will take set SampleMessage.Foo to input and return SampleMessage.
-func (x *SampleMessage) SetFoo(in *Foo) *SampleMessage {
+func (x *SampleMessage) SetFoo(in *Foo) {
 	x.TestOneof = &SampleMessage_Foo{Foo: in}
-	return x
 }
 
-// SetFunk will take set SampleMessage.Funk to input and return SampleMessage.
-func (x *SampleMessage) SetFunk(in *Funk) *SampleMessage {
+func (x *SampleMessage) SetFunk(in *Funk) {
 	x.TestOneof = &SampleMessage_Funk{Funk: in}
-	return x
 }

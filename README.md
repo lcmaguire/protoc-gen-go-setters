@@ -25,7 +25,9 @@ example.Active = true
 
 // you can now
 example := &example.Example{}
-example.SetFoo(example.Foo{...}).SetActive(true).SetName("myName")
+example.SetFoo(example.Foo{...})
+example.SetActive(true)
+example.SetName("myName")
 ```
 
 ### oneofs
