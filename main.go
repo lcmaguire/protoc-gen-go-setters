@@ -101,7 +101,7 @@ func generateMessageSetters(gen *protogen.Plugin, newFile *protogen.GeneratedFil
 
 		// will generate an append func.
 		if field.Desc.IsList() {
-			info.FieldType = strings.ReplaceAll(info.FieldType, "[]", "...")
+			info.FieldType = strings.Replace(info.FieldType, "[]", "...", 1) // only replace one to prevent [][]byte becoming ......byte
 			arrayAddition := ExecuteTemplate(appendArrayTpl, info)
 			newFile.P(arrayAddition)
 		}
