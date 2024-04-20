@@ -74,6 +74,14 @@ func (x *Example) SetSample(in *SampleMessage) {
 	x.Sample = in
 }
 
+func (x *Example) SetBites(in [][]byte) {
+	x.Bites = in
+}
+
+func (x *Example) AppendBites(in ...[]byte) {
+	x.Bites = append(x.Bites, in...)
+}
+
 func (x *Foo) SetCount(in int64) {
 	x.Count = in
 }

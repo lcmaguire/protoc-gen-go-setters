@@ -43,7 +43,9 @@ message Example {
     } 
     message Far {
         bool active = 1;
-     }
+    }
+
+    repeated bytes bites = 14;
 
 }
 
